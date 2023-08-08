@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} text-center text-6xl bg-slate-400`}>
-        <h2 className="text-4xl bg-slate-300">
+        <h2 className="text-3xl bg-slate-300">
           Root layout: compartilhado por toda aplicação
         </h2>
 
@@ -28,7 +28,8 @@ export default function RootLayout({
 
         <footer className="mt-4 text-2xl">
           <p>
-            rotas disponiveis: /login, /signin e /dashboard
+            rotas disponiveis: /login, /signin, /dashboard
+            e /dashboard/painel
           </p>
         </footer>
       </body>
