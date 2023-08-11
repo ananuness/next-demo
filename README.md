@@ -193,9 +193,6 @@ autenticação do usuário:
 as features do Next.js e API
 - [Aprenda Next.js](https://nextjs.org/learn) - um tutorial Next 
 interativo
-- [Rotas dinâmicas](https://nextjs.org/docs/app/building-your-application/routing/dynamic-routes#generating-static-params)
-- mais detalhes sobre a criação de rotas dinâmicas com Next
-
 
 <hr>
 
