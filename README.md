@@ -13,7 +13,9 @@
   - [Organização de arquivos](#organização-de-arquivos)
   - [Organização de pastas](#organização-de-pastas)
     - [Opções de organização de pastas](#opções-de-organização-de-pasta)
-- [Aprenda mais](#seedling-aprenda-mais)
+  - [Rotas Dinâmicas](#rotas-dinamicas)
+  - [Rotas Paralelas](#rotas-paralelas)
+- [Aprenda mais](#seedling-para-saber-mais)
 
 ## :hammer_and_wrench: Rodando o projeto
 
@@ -107,13 +109,93 @@ nome da pasta entre parênteses:
 > ajudar na organização e não ficar dependendo de lembrar as notações
 > nomeação reservadas para arquivos especiais do Next.
 
+### Rotas Dinâmicas
 
-## :seedling: Aprenda mais
+Quando você não conhece os segmentos exatos de uma rota com antecedência 
+e deseja criar rotas a partir de dados dinâmicos, pode usar segmentos 
+dinâmicos que são preenchidos no momento da solicitação ou 
+pré-renderizados no momento do build da aplicação.
+
+Uma rota dinâmica pode ser criada seguindo a notação: `[nome_da_pasta]`,
+como `[id]`, `[slug]` etc. Esses segmentos são passados através da prop
+`params` para as funções de `layout`, `page`, `route` e 
+`generateMetadata`.
+
+Por exemplo, um blog poderia incluir a seguinte rota: 
+`app/blog/[slug]/page.tsx`, na qual *slug* é o segmento dinâmico para
+os posts do blog:
+
+| Rota | URL | params |
+| ---- | --- | -------- |
+| `app/blog/[slug]/page.js` | `/blog/a` | `{ slug: 'a' }` |
+
+```tsx
+interface PageProps {
+  params: {
+    slug: string;
+  }
+}
+
+export default function Page({ params }:PageProps) {
+  return (
+    <div>My Post: {params.slug}</div>
+  )
+}
+```
+
+### Rotas Paralelas
+
+O roteamento paralelo permite que você, simultaneamente ou 
+condicionalmente, renderize uma ou mais páginas no mesmo `layout`.
+Por exemplo, você pode renderizar, simultaneamente, as páginas de 
+`team` e `analytics`:
+
+<div align="center">
+  <img src="./assets/parallel-routing.png" alt="rotas paralelas">
+</div>
+
+Como observado, a notação para criar uma rota paralela é: 
+`@nome_da_pasta`. Além disso, essa estrutura de pastas permite com que
+o componente em `layout.js` aceite `@team` e `@analytics` slot props e
+possa renderizá-las em paralelo juntamente com a prop `children`:
+
+```tsx
+export default function Layout(props: {
+  children: React.ReactNode
+  analytics: React.ReactNode
+  team: React.ReactNode
+}) {
+  return (
+    <>
+      {props.children}
+      {props.team}
+      {props.analytics}
+    </>
+  )
+}
+```
+
+> 💡 Note que a prop `children` é um slot implícito que não precisa estar 
+> ligado a uma pasta. Isso significa que `app/page.js` é equivalente a
+> `app/@children/page.js`.
+
+Esse tipo de rota também permite com que possamos renderizar rotas 
+condicionalmente baseada em certas condições, como o estado de 
+autenticação do usuário:
+
+<div align="center">
+  <img src="./assets/conditional-parallel-route.png" alt="rotas paralela condicional">
+</div>
+
+## :seedling: Para saber mais
 
 - [A documentação do Next.js](https://nextjs.org/docs) - aprenda sobre 
 as features do Next.js e API
 - [Aprenda Next.js](https://nextjs.org/learn) - um tutorial Next 
 interativo
+- [Rotas dinâmicas](https://nextjs.org/docs/app/building-your-application/routing/dynamic-routes#generating-static-params)
+- mais detalhes sobre a criação de rotas dinâmicas com Next
+
 
 <hr>
 
