@@ -15,6 +15,8 @@
     - [Opções de organização de pastas](#opções-de-organização-de-pasta)
   - [Rotas Dinâmicas](#rotas-dinamicas)
   - [Rotas Paralelas](#rotas-paralelas)
+- [Server Side Rendering](#satellite-server-side-rendering)
+  - [Server Components *vs* Client Components](#server-components-vs-client-components)
 - [Aprenda mais](#seedling-para-saber-mais)
 
 ## :hammer_and_wrench: Rodando o projeto
@@ -187,12 +189,54 @@ autenticação do usuário:
   <img src="./assets/conditional-parallel-route.png" alt="rotas paralela condicional">
 </div>
 
+## :satellite: Server Side Rendering
+
+A ideia de renderizar uma aplicação do lado do seridor veio para ajudar 
+a resolver problemas antes enfrentados por *Single Page Applications* 
+(SPAs):
+
+- Reduzindo javascript do lado do *browser*
+- Gerando mais compatibilidade com dispositivos e *browsers* diferentes
+- Permitir várias otimizações, como fazer o cache de uma página, 
+proporcionando um carregamento mais rápido, otimizar a renderização de 
+imagens, recursos para SEO, além de recursos para *Edge computing*.
+
+> A computação de borda (Edge computing) é um paradigma de computação 
+> distribuída que aproxima a computação e o armazenamento de dados das 
+> fontes de dados. Espera-se que isso melhore os tempos de resposta e 
+> economize largura de banda.
+
+Por ter um lado servidor, é possível trabalhar com lógicas, como acesso 
+direto ao banco de dados e até criação de APIs Rest. E é muito utilizado 
+para ser um *Backend for Frontend* (BFF), pois permite que as 
+necessidades do front sejam supridas pelo próprio back do Next.
+
+### Server Components *vs* Client Components
+
+Os *Server Components* são gerados totalmente pelo lado do servidor, 
+eles não têm nenhuma interatividade quando renderizado no navegador. 
+
+Já o *Client Component*, serve para suprir demandas que iremos precisar 
+de interatividade e manipular no navegador, como um componente de 
+vídeo, que irá ser pré-renderizado no servidor, mas terá uma parte 
+javascript que será rodada no navegador, ou seja, se for necessário 
+contato com APIs do navegador, então um *Client Component* é ideal. As 
+vantagens:
+
+- *bundle* js menor
+- carregamento inicial mais rápido
+- cacheamento em nível de componente
+- chamadas externas em paralelo
+
 ## :seedling: Para saber mais
 
 - [A documentação do Next.js](https://nextjs.org/docs) - aprenda sobre 
 as features do Next.js e API
 - [Aprenda Next.js](https://nextjs.org/learn) - um tutorial Next 
 interativo
+- [Rotas dinâmicas](https://nextjs.org/docs/app/building-your-application/routing/dynamic-routes#generating-static-params)
+- mais detalhes sobre a criação de rotas dinâmicas com Next
+
 
 <hr>
 
