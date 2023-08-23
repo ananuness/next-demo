@@ -1,7 +1,7 @@
 <div align="center">
   <h1>⚙️ Next Demo</h1>
   <p>
-    Demonstração de uso e notações utilizadas pelo Next para pastas,
+    Demonstração de uso e notações utilizadas pelo Next 13 para pastas,
     arquivos e como impacta no roteamento.
   </p>
 </div>
@@ -284,7 +284,206 @@ E claro, para recusar o cache utilizando a opção:
 fetch(`https://...`, { cache: "no-store" });
 ```
 
+### Busca de dados no cliente
+
+Se você precisa fazer um fetch em um Client Component, há três
+alternativas:
+
+- Chamar um Route Handler. Eles são executados no servidor e retornam
+  os dados para o cliente, sendo útil para quando você não quer expor
+  informações sensíveis para o cliente como API tokens;
+- Utilizar libs como [SWR](https://swr.vercel.app/) ou
+  [React Query](https://tanstack.com/query/latest).
+
 ### Busca de dados no servidor
+
+O Next estende a fetch API nativa para permitir o usuário configurar o
+caching e revalidating para cada request no servidor. E o React estende
+o fetch para memoizar as requests automaticamente enquanto renderiza
+componentes react.
+
+Pode-se usar o fetch com async/await em Server Components diretamente,
+mas é recomendado a utilização de Route Handlers ou Server Actions.
+Aqui o foco será os Route Handlers.
+
+```jsx
+async function getData() {
+  const res = await fetch("https://api.example.com/...");
+  // O valor retornado não é serializado, você pode
+  // retornar um Date, Map, Set etc.
+
+  if (!res.ok) {
+    // Isso vai ativar o `error.js` Error Boundary
+    // mais próximo
+    throw new Error("Failed to fetch data");
+  }
+
+  return res.json();
+}
+
+export default async function Page() {
+  const data = await getData();
+
+  return <main></main>;
+}
+```
+
+**⚠️ Bom saber:**
+
+- Em Route Handlers, as requisições não são memoizdas, já que esses
+  handlers não fazem parte dos componentes react;
+- Para usar async/await em Server Components com TypeScript, é
+  necessário utilizar o ts `5.1.3` ou maior e `@types/react` `18.2.8` ou
+  maior.
+
+#### Route Handlers
+
+Esses arquivos permitem você criar manipuladores de requisições
+customizados para uma dada rota, usando as APIs Web [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request)
+e [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response).
+
+<div align="center">
+  <img src="./assets/route-handler.png" alt="Route handler">
+</div>
+
+> Route Handlers só são disponíveis dentro da pasta `app`. Eles são
+> equivalentes às [`API Routes`](https://nextjs.org/docs/pages/building-your-application/routing/api-routes)
+> dentro de `pages`, então é necessário utilizar os dois juntos.
+
+#### Convenção
+
+Route Handlers são definidos em um arquivo `route.js|ts` dentro da
+pasta `app`:
+
+```tsx
+export async function GET(request: Request) {}
+```
+
+Eles podem ser organizados de forma similar aos arquivos de `page.ts`
+e `layout.ts`, mas não pode ter um arquivo `route.ts` no mesmo nível
+que uma `page`.
+
+Já os métodos suportados são: `GET`, `POST`, `PUT`, `PATCH`,
+`DELETE`, `HEAD` e `OPTIONS`. Além disso, as Requests e Responses
+nativas são estendidas pelo Next por [NextRequest](https://nextjs.org/docs/app/api-reference/functions/next-request)
+e [NextResponse](https://nextjs.org/docs/app/api-reference/functions/next-response)
+para prover helpers para casos de uso avançados.
+
+#### Exemplos de utilização
+
+- **CORS**
+
+```tsx
+export async function GET(request: Request) {
+  return new Response("Hello, Next.js!", {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    },
+  });
+}
+```
+
+- **GET**
+
+```tsx
+import { NextResponse } from "next/server";
+
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get("id");
+
+  const res = await fetch(`https://data.mongodb-api.com/product/${id}`, {
+    headers: {
+      "Content-Type": "application/json",
+      "API-Key": process.env.DATA_API_KEY,
+    },
+  });
+
+  const product = await res.json();
+
+  return NextResponse.json({ product });
+}
+```
+
+- **POST**
+
+```tsx
+import { NextResponse } from "next/server";
+
+export async function POST() {
+  const res = await fetch("https://data.mongodb-api.com/...", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "API-Key": process.env.DATA_API_KEY,
+    },
+    body: JSON.stringify({ time: new Date().toISOString() }),
+  });
+
+  const data = await res.json();
+
+  return NextResponse.json(data);
+}
+```
+
+- **Cookies**
+
+```tsx
+import { cookies } from "next/headers";
+
+export async function GET(request: Request) {
+  const cookieStore = cookies();
+  const token = cookieStore.get("token");
+
+  return new Response("Hello, Next.js!", {
+    status: 200,
+    headers: { "Set-Cookie": `token=${token.value}` },
+  });
+}
+```
+
+- **Headers**
+
+```tsx
+import { headers } from "next/headers";
+
+export async function GET(request: Request) {
+  const headersList = headers();
+  const referer = headersList.get("referer");
+
+  return new Response("Hello, Next.js!", {
+    status: 200,
+    headers: { referer: referer },
+  });
+}
+```
+
+- **Redirects**
+
+```tsx
+import { redirect } from "next/navigation";
+
+export async function GET(request: Request) {
+  redirect("https://nextjs.org/");
+}
+```
+
+- **Rotas dinâmicas**
+
+```tsx
+interface DynamicParams {
+  params: {
+    slug: string;
+  };
+}
+
+export async function GET(request: Request, { params }: DynamicParams) {
+  const slug = params.slug; // 'a', 'b', or 'c'
+}
+```
 
 <p align="center">
   <strong></strong> 🚧 Readme em construção 👷‍♀️
@@ -296,8 +495,8 @@ fetch(`https://...`, { cache: "no-store" });
   as features do Next.js e API
 - [Aprenda Next.js](https://nextjs.org/learn) - um tutorial Next
   interativo
-- [Rotas dinâmicas](https://nextjs.org/docs/app/building-your-application/routing/dynamic-routes#generating-static-params)
-- mais detalhes sobre a criação de rotas dinâmicas com Next
+- [Rotas dinâmicas](https://nextjs.org/docs/app/building-your-application/routing/dynamic-routes#generating-static-params) - mais detalhes sobre a criação de rotas dinâmicas com Next
+- [Patterns](https://nextjs.org/docs/app/building-your-application/data-fetching/patterns) - patterns e boas práticas recomendadas para buscar dados no Next e React
 
 <hr>
 
