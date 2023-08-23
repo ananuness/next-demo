@@ -17,6 +17,10 @@
   - [Rotas Paralelas](#rotas-paralelas)
 - [Server Side Rendering](#satellite-server-side-rendering)
   - [Server Components _vs_ Client Components](#server-components-vs-client-components)
+- [Data Fetching](#inbox_tray-data-fetching)
+  - [Caching](#caching)
+    - [Agora, como o Data Cache funciona?](#agora-como-o-data-cache-funciona)
+  - [Revalidating](#revalidating)
 - [Aprenda mais](#seedling-para-saber-mais)
 
 ## :hammer_and_wrench: Rodando o projeto
@@ -226,7 +230,7 @@ vantagens:
 - cacheamento em nível de componente
 - chamadas externas em paralelo
 
-## Data Fetching
+## :inbox_tray: Data Fetching
 
 _Data fetching_ é uma parte essencial em qualquer aplicação, aqui será
 mais explicado sobre fetch no servidor e fetch no client via
