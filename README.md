@@ -21,6 +21,11 @@
   - [Caching](#caching)
     - [Agora, como o Data Cache funciona?](#agora-como-o-data-cache-funciona)
   - [Revalidating](#revalidating)
+  - [Busca de dados no cliente](#busca-de-dados-no-cliente)
+  - [Busca de dados no servidor](#busca-de-dados-no-servidor)
+    - [Route Handlers](#route-handlers)
+    - [Convenção](#convenção)
+    - [Exemplos de utilização](#exemplos-de-utilização)
 - [Aprenda mais](#seedling-para-saber-mais)
 
 ## :hammer_and_wrench: Rodando o projeto
